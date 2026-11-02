@@ -12,6 +12,7 @@ import WebSocketTransport
 @MainActor
 struct StockPriceTrackerApp: App {
     @State private var tracking: StockTrackingService
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         let repository = LiveStockRepository(
@@ -34,6 +35,12 @@ struct StockPriceTrackerApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(tracking: tracking)
+                .onChange(of: scenePhase) { _, phase in
+                    if phase == .background {
+                        // Preserve prices, but require Start after returning.
+                        Task { await tracking.stop() }
+                    }
+                }
         }
     }
 }
