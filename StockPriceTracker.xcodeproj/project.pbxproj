@@ -19,19 +19,11 @@
 			remoteGlobalIDString = 46D03CA7309891EC00B75205;
 			remoteInfo = StockPriceTracker;
 		};
-		46D03CC0309891ED00B75205 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 46D03CA0309891EC00B75205 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 46D03CA7309891EC00B75205;
-			remoteInfo = StockPriceTracker;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		46D03CA8309891EC00B75205 /* StockPriceTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StockPriceTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46D03CB5309891ED00B75205 /* StockPriceTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StockPriceTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		46D03CBF309891ED00B75205 /* StockPriceTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StockPriceTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		46D03CDA309893F000B75205 /* WebSocketTransport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = WebSocketTransport; path = Packages/WebSocketTransport; sourceTree = "<group>"; };
 		46D03D373098B47700B75205 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,11 +58,6 @@
 			files = (
 			);
 		};
-		46D03CBC309891ED00B75205 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			files = (
-			);
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -92,7 +79,6 @@
 			children = (
 				46D03CA8309891EC00B75205 /* StockPriceTracker.app */,
 				46D03CB5309891ED00B75205 /* StockPriceTrackerTests.xctest */,
-				46D03CBF309891ED00B75205 /* StockPriceTrackerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -149,27 +135,6 @@
 			productReference = 46D03CB5309891ED00B75205 /* StockPriceTrackerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		46D03CBE309891ED00B75205 /* StockPriceTrackerUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 46D03CCD309891ED00B75205 /* Build configuration list for PBXNativeTarget "StockPriceTrackerUITests" */;
-			buildPhases = (
-				46D03CBB309891ED00B75205 /* Sources */,
-				46D03CBC309891ED00B75205 /* Frameworks */,
-				46D03CBD309891ED00B75205 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				46D03CC1309891ED00B75205 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				46D03CC2309891ED00B75205 /* StockPriceTrackerUITests */,
-			);
-			name = StockPriceTrackerUITests;
-			productName = StockPriceTrackerUITests;
-			productReference = 46D03CBF309891ED00B75205 /* StockPriceTrackerUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -184,10 +149,6 @@
 						CreatedOnToolsVersion = 27.1;
 					};
 					46D03CB4309891ED00B75205 = {
-						CreatedOnToolsVersion = 27.1;
-						TestTargetID = 46D03CA7309891EC00B75205;
-					};
-					46D03CBE309891ED00B75205 = {
 						CreatedOnToolsVersion = 27.1;
 						TestTargetID = 46D03CA7309891EC00B75205;
 					};
@@ -210,7 +171,6 @@
 			targets = (
 				46D03CA7309891EC00B75205 /* StockPriceTracker */,
 				46D03CB4309891ED00B75205 /* StockPriceTrackerTests */,
-				46D03CBE309891ED00B75205 /* StockPriceTrackerUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -223,11 +183,6 @@
 			);
 		};
 		46D03CB3309891ED00B75205 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			files = (
-			);
-		};
-		46D03CBD309891ED00B75205 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -245,11 +200,6 @@
 			files = (
 			);
 		};
-		46D03CBB309891ED00B75205 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			files = (
-			);
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -257,11 +207,6 @@
 			isa = PBXTargetDependency;
 			target = 46D03CA7309891EC00B75205 /* StockPriceTracker */;
 			targetProxy = 46D03CB6309891ED00B75205 /* PBXContainerItemProxy */;
-		};
-		46D03CC1309891ED00B75205 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 46D03CA7309891EC00B75205 /* StockPriceTracker */;
-			targetProxy = 46D03CC0309891ED00B75205 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -499,46 +444,6 @@
 			};
 			name = Release;
 		};
-		46D03CCE309891ED00B75205 /* Debug configuration for PBXNativeTarget "StockPriceTrackerUITests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = D3BM54CRMY;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.stockpricetracker.multibank.StockPriceTrackerUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = StockPriceTracker;
-			};
-			name = Debug;
-		};
-		46D03CCF309891ED00B75205 /* Release configuration for PBXNativeTarget "StockPriceTrackerUITests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = D3BM54CRMY;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.stockpricetracker.multibank.StockPriceTrackerUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = StockPriceTracker;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -563,14 +468,6 @@
 			buildConfigurations = (
 				46D03CCB309891ED00B75205 /* Debug configuration for PBXNativeTarget "StockPriceTrackerTests" */,
 				46D03CCC309891ED00B75205 /* Release configuration for PBXNativeTarget "StockPriceTrackerTests" */,
-			);
-			defaultConfigurationName = Release;
-		};
-		46D03CCD309891ED00B75205 /* Build configuration list for PBXNativeTarget "StockPriceTrackerUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				46D03CCE309891ED00B75205 /* Debug configuration for PBXNativeTarget "StockPriceTrackerUITests" */,
-				46D03CCF309891ED00B75205 /* Release configuration for PBXNativeTarget "StockPriceTrackerUITests" */,
 			);
 			defaultConfigurationName = Release;
 		};
