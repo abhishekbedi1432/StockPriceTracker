@@ -127,6 +127,44 @@ struct LiveStockRepositoryTests {
         await repository.disconnect()
     }
 
+    @Test
+    func sendFailureLeavesStocksUnchanged() async throws {
+        let client = StubWebSocketClient(
+            response: .text(#"[{"symbol":"AAPL","price":105}]"#),
+            sendError: TransportFailure.sendFailed
+        )
+        let repository = try makeRepository(client: client)
+        let originalStocks = repository.stocks
+        try await repository.connect()
+
+        await #expect(throws: TransportFailure.self) {
+            _ = try await repository.nextUpdate()
+        }
+
+        #expect(repository.stocks == originalStocks)
+        await repository.disconnect()
+    }
+
+    @Test
+    func receiveFailureLeavesStocksUnchanged() async throws {
+        let client = StubWebSocketClient(
+            response: .text(#"[{"symbol":"AAPL","price":105}]"#),
+            receiveError: TransportFailure.receiveFailed
+        )
+        let repository = try makeRepository(client: client)
+        let originalStocks = repository.stocks
+        try await repository.connect()
+
+        await #expect(throws: TransportFailure.self) {
+            _ = try await repository.nextUpdate()
+        }
+
+        let sent = await client.lastSent
+        #expect(sent != nil)
+        #expect(repository.stocks == originalStocks)
+        await repository.disconnect()
+    }
+
     private func makeRepository(
         client: StubWebSocketClient,
         updates: [StockPriceMessage] = [
@@ -152,22 +190,41 @@ struct LiveStockRepositoryTests {
     }
 }
 
+private enum TransportFailure: Error {
+    case sendFailed
+    case receiveFailed
+}
+
 private actor StubWebSocketClient: WebSocketClient {
     private let response: WebSocketMessage
+    private let sendError: (any Error)?
+    private let receiveError: (any Error)?
     private(set) var lastSent: WebSocketMessage?
 
-    init(response: WebSocketMessage) {
+    init(
+        response: WebSocketMessage,
+        sendError: (any Error)? = nil,
+        receiveError: (any Error)? = nil
+    ) {
         self.response = response
+        self.sendError = sendError
+        self.receiveError = receiveError
     }
 
     func connect(to url: URL) async throws {}
 
     func send(_ message: WebSocketMessage) async throws {
+        if let sendError {
+            throw sendError
+        }
         lastSent = message
     }
 
     func receive() async throws -> WebSocketMessage {
-        response
+        if let receiveError {
+            throw receiveError
+        }
+        return response
     }
 
     func disconnect() async {}
