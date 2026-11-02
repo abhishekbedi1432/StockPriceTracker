@@ -74,6 +74,82 @@ struct LiveStockRepositoryTests {
 
         await repository.disconnect()
     }
+    @Test(arguments: [
+        "not JSON",
+        #"[{"symbol":"AAPL"}]"#
+    ])
+    func malformedResponseLeavesStocksUnchanged(response: String) async throws {
+        let client = StubWebSocketClient(response: .text(response))
+        let repository = try makeRepository(client: client)
+        let originalStocks = repository.stocks
+        try await repository.connect()
+
+        await #expect(throws: DecodingError.self) {
+            _ = try await repository.nextUpdate()
+        }
+
+        #expect(repository.stocks == originalStocks)
+        await repository.disconnect()
+    }
+
+    @Test
+    func unknownSymbolRejectsEntireBatch() async throws {
+        // The valid update comes first to detect accidental partial application.
+        let client = StubWebSocketClient(response: .text(
+            #"[{"symbol":"AAPL","price":105},{"symbol":"UNKNOWN","price":200}]"#
+        ))
+        let repository = try makeRepository(client: client)
+        let originalStocks = repository.stocks
+        try await repository.connect()
+
+        await #expect(throws: (any Error).self) {
+            _ = try await repository.nextUpdate()
+        }
+
+        #expect(repository.stocks == originalStocks)
+        await repository.disconnect()
+    }
+
+    @Test
+    func emptyOutgoingBatchThrowsWithoutSending() async throws {
+        let client = StubWebSocketClient(response: .text("[]"))
+        let repository = try makeRepository(client: client, updates: [])
+        let originalStocks = repository.stocks
+        try await repository.connect()
+
+        await #expect(throws: (any Error).self) {
+            _ = try await repository.nextUpdate()
+        }
+
+        let sent = await client.lastSent
+        #expect(sent == nil)
+        #expect(repository.stocks == originalStocks)
+        await repository.disconnect()
+    }
+
+    private func makeRepository(
+        client: StubWebSocketClient,
+        updates: [StockPriceMessage] = [
+            StockPriceMessage(symbol: "AAPL", price: 105)
+        ]
+    ) throws -> LiveStockRepository {
+        let endpoint = try #require(URL(string: "wss://example.com"))
+        return LiveStockRepository(
+            client: client,
+            endpoint: endpoint,
+            stocks: [
+                Stock(
+                    symbol: "AAPL",
+                    name: "Apple",
+                    description: "Test stock",
+                    currencyCode: "USD",
+                    price: 100,
+                    change: 2
+                )
+            ],
+            makeUpdates: { _ in updates }
+        )
+    }
 }
 
 private actor StubWebSocketClient: WebSocketClient {
