@@ -9,7 +9,7 @@ import Foundation
 struct Stock: Identifiable, Equatable, Sendable {
     let symbol: String
     let name: String
-    let description: String
+    let description: LocalizedStringResource
     let currencyCode: String
 
     var price: Decimal

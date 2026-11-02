@@ -43,7 +43,10 @@ struct PriceSimulator {
             return Stock(
                 symbol: company.symbol,
                 name: company.name,
-                description: "Stock-price updates for \(company.name).",
+                description: LocalizedStringResource(
+                    "Stock-price updates for \(company.name).",
+                    comment: "Stock detail description. The placeholder is the company name."
+                ),
                 currencyCode: currencyCode,
                 price: Decimal(initialPriceInCents) / 100,
                 change: 0
