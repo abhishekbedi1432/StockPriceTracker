@@ -50,11 +50,16 @@ The app tests use Swift Testing and controlled dependencies rather than the publ
 - connection cancellation, connection failure retry, active-feed failure retry
 - malformed batches failing the service without publishing partial prices
 - catalog generation for all 25 symbols
-- SwiftUI hosting for list, detail, row, and price-change presentation paths
+- SwiftUI hosting for list, detail, row, price-change, and `ContentView` branches
+- the background-stops-the-feed lifecycle policy
+
+Repository stubs park on a cancellation-aware gate (`StockPriceTrackerTests/ParkGate.swift`). A stop always resumes the feed task, because a late `nextUpdate()` call would otherwise leave `stop()` awaiting a task that can never finish.
 
 In Xcode, select the `StockPriceTracker` scheme and use **Product → Test**. Enable code coverage under the scheme’s Test options when measuring line coverage.
 
-For the transport suite, open `Packages/WebSocketTransport/Package.swift`, select the `WebSocketTransport` scheme and an iOS simulator, then use **Product → Test**. Unit tests cover disconnected operations, invalid URLs, safe disconnect, and stalled-connect `operationTimedOut`. The echo integration test is gated by `RUN_WEBSOCKET_INTEGRATION=1`; leave that unset for offline runs.
+For the transport suite, open `Packages/WebSocketTransport/Package.swift`, select the `WebSocketTransport` scheme and an iOS simulator, then use **Product → Test**. These tests need no network and cover the client’s validation and failure paths: send/receive while disconnected, unsupported scheme, missing host, scheme-less URL, uppercase scheme, repeated disconnect, cleanup after a failed connect, and error/message equality.
+
+The successful handshake, send/receive round trip, binary rejection, and operation deadline all require a live socket. They are covered by the echo integration test, gated by `RUN_WEBSOCKET_INTEGRATION=1`; leave that unset for offline runs. The package deliberately contains no in-process fake WebSocket server: the framing and SHA-1 handshake it would need are protocol code we would have to maintain, and the real handshake is already exercised against the public echo endpoint.
 
 ```sh
 # From the repository root: app tests
