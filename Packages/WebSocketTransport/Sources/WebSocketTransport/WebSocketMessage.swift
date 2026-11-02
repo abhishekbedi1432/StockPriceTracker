@@ -1,9 +1,4 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
-public func hello() {
-    print("Hello, world!")
-}
 
-public enum WebSocketTransport: Sendable, Equatable {
+public enum WebSocketMessage: Sendable, Equatable {
     case text(String)
 }
