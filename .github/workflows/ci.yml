@@ -1,0 +1,186 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app-tests:
+    name: App tests (iOS Simulator)
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      # Prefer an explicit Xcode when the runner provides one; otherwise use the default.
+      # StockPriceTracker requires Swift 6.4 / a matching Xcode. Adjust XCODE_APP if needed.
+      XCODE_APP: /Applications/Xcode.app
+      SIMULATOR_NAME: iPhone 16
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          if [ -d "$XCODE_APP" ]; then
+            sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+          fi
+          xcodebuild -version
+          swift --version
+          xcrun simctl list runtimes
+          xcrun simctl list devices available
+
+      - name: Resolve simulator UDID
+        id: sim
+        run: |
+          # Prefer an exact name match on any available iOS runtime; fall back to the first iPhone.
+          UDID=$(xcrun simctl list devices available \
+            | awk -v name="$SIMULATOR_NAME" '
+              index($0, name " (") {
+                if (match($0, /\(([A-F0-9-]+)\)/)) {
+                  print substr($0, RSTART+1, RLENGTH-2)
+                  exit
+                }
+              }')
+          if [ -z "$UDID" ]; then
+            UDID=$(xcrun simctl list devices available \
+              | awk '/iPhone / {
+                  if (match($0, /\(([A-F0-9-]+)\)/)) {
+                    print substr($0, RSTART+1, RLENGTH-2)
+                    exit
+                  }
+                }')
+          fi
+          if [ -z "$UDID" ]; then
+            echo "No iPhone simulator is available on this runner."
+            xcrun simctl list devices available
+            exit 1
+          fi
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          echo "Using simulator UDID $UDID"
+
+      - name: Test StockPriceTracker
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project StockPriceTracker.xcodeproj \
+            -scheme StockPriceTracker \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults/App.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcbeautify --quieter || xcodebuild test \
+            -project StockPriceTracker.xcodeproj \
+            -scheme StockPriceTracker \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults/App.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload app result bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-xcresult
+          path: TestResults/App.xcresult
+          if-no-files-found: ignore
+
+  package-tests:
+    name: WebSocketTransport package tests
+    runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      XCODE_APP: /Applications/Xcode.app
+      SIMULATOR_NAME: iPhone 16
+      # Default CI stays offline-safe; live echo is a separate opt-in job.
+      RUN_WEBSOCKET_INTEGRATION: "0"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          if [ -d "$XCODE_APP" ]; then
+            sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+          fi
+          xcodebuild -version
+          swift --version
+
+      - name: Resolve simulator UDID
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available \
+            | awk -v name="$SIMULATOR_NAME" '
+              index($0, name " (") {
+                if (match($0, /\(([A-F0-9-]+)\)/)) {
+                  print substr($0, RSTART+1, RLENGTH-2)
+                  exit
+                }
+              }')
+          if [ -z "$UDID" ]; then
+            UDID=$(xcrun simctl list devices available \
+              | awk '/iPhone / {
+                  if (match($0, /\(([A-F0-9-]+)\)/)) {
+                    print substr($0, RSTART+1, RLENGTH-2)
+                    exit
+                  }
+                }')
+          fi
+          if [ -z "$UDID" ]; then
+            echo "No iPhone simulator is available on this runner."
+            exit 1
+          fi
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+
+      - name: Test WebSocketTransport (unit)
+        working-directory: Packages/WebSocketTransport
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme WebSocketTransport \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -skip-testing:WebSocketTransportTests/WebSocketEchoIntegrationTests \
+            -enableCodeCoverage YES \
+            -resultBundlePath ../../TestResults/Package.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcbeautify --quieter || xcodebuild test \
+            -scheme WebSocketTransport \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -skip-testing:WebSocketTransportTests/WebSocketEchoIntegrationTests \
+            -enableCodeCoverage YES \
+            -resultBundlePath ../../TestResults/Package.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload package result bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-xcresult
+          path: TestResults/Package.xcresult
+          if-no-files-found: ignore
+
+  package-echo-integration:
+    name: WebSocket echo integration (opt-in network)
+    runs-on: macos-15
+    timeout-minutes: 20
+    if: ${{ vars.RUN_WEBSOCKET_INTEGRATION == 'true' }}
+    env:
+      XCODE_APP: /Applications/Xcode.app
+      RUN_WEBSOCKET_INTEGRATION: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          if [ -d "$XCODE_APP" ]; then
+            sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+          fi
+          swift --version
+
+      - name: Live echo integration
+        working-directory: Packages/WebSocketTransport
+        run: swift test --filter WebSocketEchoIntegrationTests
