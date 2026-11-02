@@ -169,7 +169,7 @@ struct SwiftUIRenderingTests {
             repository.delayDisconnect = true
             let stopTask = Task { await tracking.stop() }
             await waitUntil(tracking) { $0.state == .stopping }
-            let host = render(
+            _ = render(
                 StockListView(viewModel: listModel, selection: .constant(nil))
                     .frame(width: 390, height: 844)
             )
@@ -183,7 +183,7 @@ struct SwiftUIRenderingTests {
             await waitUntil(tracking) { $0.state == .failed }
         }
 
-        let host = render(
+        _ = render(
             NavigationStack {
                 StockListView(viewModel: listModel, selection: .constant("AAPL"))
             }
