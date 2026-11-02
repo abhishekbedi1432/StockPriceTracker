@@ -44,7 +44,15 @@ final class StockTrackingService {
     }
 
     func stop() async {
-        guard let task = feedTask, state != .stopping else {
+        guard state != .stopping else {
+            return
+        }
+
+        // Failure already cleared the task; still return to a clean disconnected state.
+        guard let task = feedTask else {
+            if state == .failed {
+                state = .disconnected
+            }
             return
         }
 
