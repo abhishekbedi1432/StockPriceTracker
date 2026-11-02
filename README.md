@@ -50,7 +50,15 @@ RUN_WEBSOCKET_INTEGRATION=1 swift test --filter WebSocketEchoIntegrationTests
 
 ## Regional support
 
-The catalog translates all UI chrome and all 25 company descriptions into Arabic. Formatting is locale-aware and quotes stay USD. Verify RTL, Dynamic Type, and iPhone/iPad navigation manually.
+The catalog translates all UI chrome and all 25 company descriptions into Arabic. Formatting is locale-aware and quotes stay USD; tickers and company names keep their market form. There is no in-app language picker — the app follows the system or scheme language.
+
+To run in Arabic:
+
+- **Xcode:** *Edit Scheme → Run → Options → App Language → Arabic*. Pick *Right-to-Left Pseudolanguage* to check RTL layout without translating.
+- **Simulator or device:** *Settings → General → Language & Region → iPhone Language → العربية*. This restarts SpringBoard.
+- **Single app:** *Settings → StockPriceTracker → Preferred Language → العربية*.
+
+Verify RTL, Dynamic Type, and iPhone/iPad navigation manually.
 
 ## Source control
 
