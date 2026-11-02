@@ -51,19 +51,18 @@ struct PriceSimulator {
         }
     }
 
-    static func makeUpdate(
-        for stocks: [Stock]
-    ) -> StockPriceMessage? {
-        guard let stock = stocks.randomElement() else {
-            return nil
+    static func makeUpdates(for stocks: [Stock]) -> [StockPriceMessage] {
+        guard !stocks.isEmpty else { return [] }
+
+        let count = Int.random(in: min(2, stocks.count)...min(6, stocks.count))
+        return stocks.shuffled().prefix(count).map { stock in
+            let movementInCents = Int.random(in: -500...500)
+            let movement = Decimal(movementInCents) / 100
+
+            return StockPriceMessage(
+                symbol: stock.symbol,
+                price: stock.price + movement
+            )
         }
-
-        let movementInCents = Int.random(in: -500...500)
-        let movement = Decimal(movementInCents) / 100
-
-        return StockPriceMessage(
-            symbol: stock.symbol,
-            price: stock.price + movement
-        )
     }
 }

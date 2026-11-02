@@ -16,7 +16,7 @@ struct LiveStockRepositoryTests {
     func appliesEchoedPriceInsteadOfOutgoingPrice() async throws {
         let client = StubWebSocketClient(
             response: .text(
-                #"{"symbol":"AAPL","price":103}"#
+                #"[{"symbol":"AAPL","price":103},{"symbol":"MSFT","price":198}]"#
             )
         )
 
@@ -35,13 +35,15 @@ struct LiveStockRepositoryTests {
                     currencyCode: "USD",
                     price: 100,
                     change: 0
-                )
+                ),
+                Stock(symbol: "MSFT", name: "Microsoft", description: "Test stock",
+                      currencyCode: "USD", price: 200, change: 0)
             ],
-            makeUpdate: { _ in
-                StockPriceMessage(
-                    symbol: "AAPL",
-                    price: 105
-                )
+            makeUpdates: { _ in
+                [
+                    StockPriceMessage(symbol: "AAPL", price: 105),
+                    StockPriceMessage(symbol: "MSFT", price: 205)
+                ]
             }
         )
 
@@ -53,6 +55,8 @@ struct LiveStockRepositoryTests {
         // The outgoing message proposed 105; the echo supplied 103.
         #expect(stock.price == 103)
         #expect(stock.change == 3)
+        #expect(stocks[1].price == 198)
+        #expect(stocks[1].change == -2)
 
         let sent = await client.lastSent
         let message = try #require(sent)
@@ -60,12 +64,12 @@ struct LiveStockRepositoryTests {
         switch message {
         case .text(let text):
             let payload = try JSONDecoder().decode(
-                StockPriceMessage.self,
+                [StockPriceMessage].self,
                 from: Data(text.utf8)
             )
 
-            #expect(payload.symbol == "AAPL")
-            #expect(payload.price == 105)
+            #expect(payload.map(\.symbol) == ["AAPL", "MSFT"])
+            #expect(payload.map(\.price) == [105, 205])
         }
 
         await repository.disconnect()

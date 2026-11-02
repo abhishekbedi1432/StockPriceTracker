@@ -15,34 +15,35 @@ final class LiveStockRepository: StockRepository {
     private let client: any WebSocketClient
     private let endpoint: URL
 
-    private let makeUpdate:
-        @MainActor ([Stock]) -> StockPriceMessage?
+    private let makeUpdates:
+        @MainActor ([Stock]) -> [StockPriceMessage]
 
     init(
         client: any WebSocketClient,
         endpoint: URL,
         stocks: [Stock],
-        makeUpdate: @escaping @MainActor ([Stock]) -> StockPriceMessage? = {
-            PriceSimulator.makeUpdate(for: $0)
+        makeUpdates: @escaping @MainActor ([Stock]) -> [StockPriceMessage] = {
+            PriceSimulator.makeUpdates(for: $0)
         }
     ) {
         self.client = client
         self.endpoint = endpoint
         self.stocks = stocks
-        self.makeUpdate = makeUpdate
+        self.makeUpdates = makeUpdates
     }
 
     func connect() async throws {
         try await client.connect(to: endpoint)
     }
 
-    /// Sends a simulated price to the echo server and applies the echoed response.
+    /// Sends a batch of simulated prices and applies the echoed response.
     func nextUpdate() async throws -> [Stock] {
-        guard let proposedUpdate = makeUpdate(stocks) else {
+        let proposedUpdates = makeUpdates(stocks)
+        guard !proposedUpdates.isEmpty else {
             throw FeedError.noStocks
         }
 
-        let data = try JSONEncoder().encode(proposedUpdate)
+        let data = try JSONEncoder().encode(proposedUpdates)
         let text = String(decoding: data, as: UTF8.self)
 
         try await client.send(.text(text))
@@ -52,18 +53,25 @@ final class LiveStockRepository: StockRepository {
 
         switch response {
         case .text(let text):
-            let echoedUpdate = try JSONDecoder().decode(
-                StockPriceMessage.self,
+            print("Received:", text)
+            let echoedUpdates = try JSONDecoder().decode(
+                [StockPriceMessage].self,
                 from: Data(text.utf8)
             )
+            
 
-            guard let index = stocks.firstIndex(
-                where: { $0.symbol == echoedUpdate.symbol }
-            ) else {
-                throw FeedError.unknownSymbol(echoedUpdate.symbol)
+            // Validate the entire batch before publishing any changes.
+            var updatedStocks = stocks
+            for update in echoedUpdates {
+                guard let index = updatedStocks.firstIndex(
+                    where: { $0.symbol == update.symbol }
+                ) else {
+                    throw FeedError.unknownSymbol(update.symbol)
+                }
+
+                updatedStocks[index].applyPrice(update.price)
             }
-
-            stocks[index].applyPrice(echoedUpdate.price)
+            stocks = updatedStocks
         }
 
         return stocks
