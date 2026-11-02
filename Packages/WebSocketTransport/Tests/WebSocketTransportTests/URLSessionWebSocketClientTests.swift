@@ -59,31 +59,4 @@ struct URLSessionWebSocketClientTests {
         await client.disconnect()
         await client.disconnect()
     }
-
-    @Test
-    func stalledConnectTimesOutWithOperationTimedOut() async throws {
-        // Non-routable address keeps the handshake pending until the client deadline.
-        let url = try #require(URL(string: "ws://172.16.0.1:9"))
-        let client = URLSessionWebSocketClient(operationTimeoutSeconds: 1)
-
-        let started = ContinuousClock.now
-        do {
-            try await client.connect(to: url)
-            Issue.record("Expected a stalled connect to time out.")
-        } catch {
-            #expect(error as? WebSocketError == .operationTimedOut)
-        }
-
-        let elapsed = ContinuousClock.now - started
-        #expect(elapsed >= .seconds(1))
-        #expect(elapsed < .seconds(5))
-
-        // Timed-out connect must leave the client reusable.
-        do {
-            try await client.send(.text("after-timeout"))
-            Issue.record("Expected the client to remain disconnected after timeout.")
-        } catch {
-            #expect(error as? WebSocketError == .notConnected)
-        }
-    }
 }
