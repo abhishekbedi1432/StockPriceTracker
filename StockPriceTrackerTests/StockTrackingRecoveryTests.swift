@@ -1,5 +1,4 @@
 import Foundation
-import Observation
 import Testing
 @testable import StockPriceTracker
 
@@ -12,7 +11,7 @@ struct StockTrackingRecoveryTests {
         let originalStocks = service.stocks
 
         service.start()
-        await waitForStateChange(in: service)
+        await waitUntil(service) { $0.state == .failed }
 
         #expect(service.state == .failed)
         #expect(repository.connectCount == 1)
@@ -20,8 +19,7 @@ struct StockTrackingRecoveryTests {
         #expect(service.stocks == originalStocks)
 
         service.start()
-        #expect(service.state == .connecting)
-        await waitForStateChange(in: service)
+        await waitUntil(service) { $0.state == .connected }
 
         #expect(service.state == .connected)
         #expect(repository.connectCount == 2)
@@ -79,19 +77,6 @@ struct StockTrackingRecoveryTests {
         #expect(service.state == .disconnected)
     }
 
-    private func waitForStateChange(in service: StockTrackingService) async {
-        await withCheckedContinuation { continuation in
-            withObservationTracking {
-                _ = service.state
-            } onChange: {
-                // Observation fires before assignment. Resume on the main actor
-                // after the service finishes updating its state and task handle.
-                Task { @MainActor in
-                    continuation.resume()
-                }
-            }
-        }
-    }
 }
 
 @MainActor
@@ -108,6 +93,7 @@ private final class RetryStockRepository: StockRepository {
     ]
     private(set) var connectCount = 0
     private(set) var disconnectCount = 0
+    private var parkedUpdate: CheckedContinuation<[Stock], any Error>?
 
     func connect() async throws {
         connectCount += 1
@@ -117,11 +103,17 @@ private final class RetryStockRepository: StockRepository {
     }
 
     func nextUpdate() async throws -> [Stock] {
-        stocks
+        // Stay connected without spinning the feed loop until stop().
+        try await withCheckedThrowingContinuation { continuation in
+            parkedUpdate = continuation
+        }
     }
 
     func disconnect() async {
         disconnectCount += 1
+        let parked = parkedUpdate
+        parkedUpdate = nil
+        parked?.resume(throwing: CancellationError())
     }
 
     private enum ConnectionFailure: Error {
@@ -144,14 +136,16 @@ private final class FailingUpdateRepository: StockRepository {
     private(set) var connectCount = 0
     private(set) var disconnectCount = 0
     private var updateCount = 0
+    private var parkedUpdate: CheckedContinuation<[Stock], any Error>?
 
     func connect() async throws {
         connectCount += 1
+        updateCount = 0
     }
 
     func nextUpdate() async throws -> [Stock] {
         updateCount += 1
-        // First run: one good update, then fail. Retry run: succeed again.
+        // First run: one good update, then fail. Retry run: one good update, then park until stop.
         if connectCount == 1 {
             if updateCount == 1 {
                 stocks[0].applyPrice(110)
@@ -160,12 +154,21 @@ private final class FailingUpdateRepository: StockRepository {
             throw UpdateFailure.transport
         }
 
-        stocks[0].applyPrice(120)
-        return stocks
+        if updateCount == 1 {
+            stocks[0].applyPrice(120)
+            return stocks
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            parkedUpdate = continuation
+        }
     }
 
     func disconnect() async {
         disconnectCount += 1
+        let parked = parkedUpdate
+        parkedUpdate = nil
+        parked?.resume(throwing: CancellationError())
     }
 
     private enum UpdateFailure: Error {

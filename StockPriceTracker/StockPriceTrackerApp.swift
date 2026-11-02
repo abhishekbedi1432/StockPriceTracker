@@ -36,11 +36,19 @@ struct StockPriceTrackerApp: App {
         WindowGroup {
             ContentView(tracking: tracking)
                 .onChange(of: scenePhase) { _, phase in
-                    if phase == .background {
-                        // Preserve prices, but require Start after returning.
-                        Task { await tracking.stop() }
+                    Task {
+                        await Self.handleScenePhase(phase, tracking: tracking)
                     }
                 }
         }
+    }
+
+    /// Stops the feed when the app leaves the foreground so prices freeze until Start.
+    static func handleScenePhase(
+        _ phase: ScenePhase,
+        tracking: StockTrackingService
+    ) async {
+        guard phase == .background else { return }
+        await tracking.stop()
     }
 }
