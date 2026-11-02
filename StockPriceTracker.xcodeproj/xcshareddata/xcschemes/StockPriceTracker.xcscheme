@@ -39,16 +39,6 @@
                ReferencedContainer = "container:StockPriceTracker.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "46D03CBE309891ED00B75205"
-               BuildableName = "StockPriceTrackerUITests.xctest"
-               ReferencedContainer = "container:StockPriceTracker.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
