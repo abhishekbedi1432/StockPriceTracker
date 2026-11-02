@@ -4,7 +4,7 @@ A SwiftUI assessment app displaying simulated prices for 25 stock symbols. Price
 
 ## Run locally
 
-The development environment is Xcode 27.1 with Swift 6.4. The local WebSocket package requires Swift tools 6.4. The app and app tests target iOS 17.0 or later. The reusable WebSocket package retains its iOS 15 minimum and is compatible with the app's iOS 17 target. Use an iOS 17 or newer simulator. Older toolchains have not been validated.
+Developed with Xcode 27.1 and Swift 6.4. The local WebSocket package requires Swift tools 6.4. The app and app tests target iOS 17.0 or later. The reusable WebSocket package retains its iOS 15 minimum and is compatible with the app target. Use an iOS 17 or newer simulator.
 
 1. Open `StockPriceTracker.xcodeproj` in Xcode.
 2. Select the `StockPriceTracker` scheme and an installed iOS simulator.
@@ -22,6 +22,8 @@ Internet access is required for the feed. No API key is needed. For a physical d
 - Both sorting options are descending. Price-change sorting uses signed values, with symbol order breaking ties.
 - List and detail view models share one tracking service, so the selected symbol continues receiving updates while its details are displayed.
 - Connection states include disconnected, connecting, connected, stopping, and failed. Failed connections can be retried manually.
+- Entering the background stops the feed and preserves the latest prices. Returning to the foreground stays disconnected until **Start** is tapped again.
+- Each connect/send/receive on the transport client must finish within 15 seconds or fails with `operationTimedOut`.
 
 ## Architecture
 
@@ -38,33 +40,54 @@ Direct asynchronous `send` and `receive` operations suit the required echo workf
 
 ## Tests
 
-The app tests use Swift Testing and controlled dependencies rather than the public echo server. They cover price arithmetic, JSON decoding, batch rollback, sorting, connection cancellation, shared list/detail values, late responses during Stop, and simulator price boundaries. Asynchronous tests synchronize on repository events; the shared-update test still uses the service's production pacing interval.
+The app tests use Swift Testing and controlled dependencies rather than the public echo server. They cover:
 
-In Xcode, select the `StockPriceTracker` scheme and use **Product → Test**. The latest local app run passed 26 test cases. This suite does not include the package tests.
+- price arithmetic and positive-price floor
+- JSON decoding and batch rollback (malformed payload, unknown symbol, empty batch)
+- send/receive transport failures through the repository
+- sorting and tie-break rules
+- shared list/detail values and late responses during Stop
+- connection cancellation, connection failure retry, active-feed failure retry
+- malformed batches failing the service without publishing partial prices
+- catalog generation for all 25 symbols
+- SwiftUI hosting for list, detail, row, and price-change presentation paths
 
-For the transport suite, open `Packages/WebSocketTransport/Package.swift`, select the `WebSocketTransport` scheme and an iOS simulator, then use **Product → Test**. Unit tests cover disconnected operations and invalid URLs. The echo integration test is gated by `RUN_WEBSOCKET_INTEGRATION=1`; explicitly disable that variable for offline runs and enable it only for the live-server check. Inspect the scheme's Test environment rather than assuming its current setting.
+In Xcode, select the `StockPriceTracker` scheme and use **Product → Test**. Enable code coverage under the scheme’s Test options when measuring line coverage.
 
-Command-line templates for automation follow. Replace `SIMULATOR_UDID` with an installed, compatible simulator identifier. These templates must be validated on the chosen CI runner; no CI workflow is included yet.
+For the transport suite, open `Packages/WebSocketTransport/Package.swift`, select the `WebSocketTransport` scheme and an iOS simulator, then use **Product → Test**. Unit tests cover disconnected operations, invalid URLs, safe disconnect, and stalled-connect `operationTimedOut`. The echo integration test is gated by `RUN_WEBSOCKET_INTEGRATION=1`; leave that unset for offline runs.
 
 ```sh
 # From the repository root: app tests
 xcodebuild test -project StockPriceTracker.xcodeproj \
   -scheme StockPriceTracker \
-  -destination 'platform=iOS Simulator,id=SIMULATOR_UDID'
+  -destination 'platform=iOS Simulator,id=SIMULATOR_UDID' \
+  -enableCodeCoverage YES
 
-# Separately: transport tests, excluding the external-server suite
+# Separately: transport unit tests (no external network)
 cd Packages/WebSocketTransport
 xcodebuild test -scheme WebSocketTransport \
   -destination 'platform=iOS Simulator,id=SIMULATOR_UDID' \
-  -skip-testing:WebSocketTransportTests/WebSocketEchoIntegrationTests
+  -skip-testing:WebSocketTransportTests/WebSocketEchoIntegrationTests \
+  -enableCodeCoverage YES
+
+# Opt-in live echo check
+RUN_WEBSOCKET_INTEGRATION=1 swift test --filter WebSocketEchoIntegrationTests
 ```
 
-## Regional support and remaining work
+## CI
 
-The string catalog includes Arabic translations. Currency and date formatting use locale-aware format styles; the simulated instruments are denominated in USD. Generated stock descriptions are still English placeholders. Arabic layout, accessibility, and navigation need device-level verification.
+GitHub Actions workflow: `.github/workflows/ci.yml`.
 
-Before submission, validate a fresh clone, run the package suite and live echo check, add CI, and confirm a public GitHub repository URL. Further hardening includes failure/retry coverage, an explicit background/foreground policy, and bounded handling of stalled connections. The app currently retries manually and retains per-message debug logging. No automated UI tests are included.
+- **App tests** on `macos-15` with an explicit iPhone simulator destination and code coverage enabled.
+- **WebSocketTransport unit tests** on the same runner image; integration suite skipped by default.
+- **Echo integration** runs only when the repository variable `RUN_WEBSOCKET_INTEGRATION` is `true`.
+
+The workflow selects the runner’s default `Xcode.app`. Because this project needs Swift 6.4, confirm the GitHub-hosted image provides a matching toolchain before relying on CI, or point `XCODE_APP` at a suitable installed Xcode.
+
+## Regional support
+
+The string catalog includes Arabic translations for UI chrome and all 25 company descriptions. Currency and date formatting use locale-aware format styles; simulated instruments remain USD-denominated. Company and ticker names stay in their market form. Verify Arabic RTL layout, Dynamic Type, and iPhone/iPad navigation on device or simulator before submission.
 
 ## Source control
 
-Keep each behavior change and its tests in a focused commit. Run the affected checks before committing, and keep personal Xcode state out of submissions. Review changes through pull requests when collaborating. The public repository URL should be provided separately with the assessment submission.
+Keep each behavior change and its tests in a focused commit. Run the affected checks before committing, and keep personal Xcode state out of submissions. Review changes through pull requests when collaborating. Publish a public GitHub repository URL with the assessment submission once the remote is configured.
