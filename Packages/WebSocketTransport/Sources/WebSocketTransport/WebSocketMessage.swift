@@ -3,3 +3,7 @@
 public func hello() {
     print("Hello, world!")
 }
+
+public enum WebSocketTransport: Sendable, Equatable {
+    case text(String)
+}
