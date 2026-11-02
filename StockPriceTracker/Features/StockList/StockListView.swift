@@ -11,6 +11,7 @@ import SwiftUI
 struct StockListView: View {
     @Bindable var viewModel: StockListViewModel
     @Binding var selection: String?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(spacing: 0) {
@@ -87,7 +88,18 @@ struct StockListView: View {
         }
     }
 
+    @ViewBuilder
     private var sortPicker: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            sortOptions
+                .pickerStyle(.menu)
+        } else {
+            sortOptions
+                .pickerStyle(.segmented)
+        }
+    }
+
+    private var sortOptions: some View {
         Picker("Sort by", selection: $viewModel.sortOption) {
             Text("Price")
                 .tag(StockSortOption.price)
@@ -95,7 +107,6 @@ struct StockListView: View {
             Text("Price Change")
                 .tag(StockSortOption.change)
         }
-        .pickerStyle(.segmented)
     }
 
     private var statusTitle: LocalizedStringKey {
