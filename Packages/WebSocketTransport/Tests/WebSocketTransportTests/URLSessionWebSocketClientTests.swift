@@ -59,4 +59,17 @@ struct URLSessionWebSocketClientTests {
         await client.disconnect()
         await client.disconnect()
     }
+
+    @Test
+    func webSocketMessageAndErrorEquality() {
+        #expect(WebSocketMessage.text("a") == WebSocketMessage.text("a"))
+        #expect(WebSocketMessage.text("a") != WebSocketMessage.text("b"))
+
+        #expect(WebSocketError.notConnected == .notConnected)
+        #expect(WebSocketError.connectionAlreadyStarted == .connectionAlreadyStarted)
+        #expect(WebSocketError.unsupportedMessage == .unsupportedMessage)
+        #expect(WebSocketError.invalidURL == .invalidURL)
+        #expect(WebSocketError.operationTimedOut == .operationTimedOut)
+        #expect(WebSocketError.notConnected != .invalidURL)
+    }
 }
