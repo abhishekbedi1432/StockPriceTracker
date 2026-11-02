@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		46D03CDD309894A400B75205 /* WebSocketTransport in Frameworks */ = {isa = PBXBuildFile; productRef = 46D03CDC309894A400B75205 /* WebSocketTransport */; };
+		46D03D383098B47700B75205 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 46D03D373098B47700B75205 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +33,7 @@
 		46D03CB5309891ED00B75205 /* StockPriceTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StockPriceTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		46D03CBF309891ED00B75205 /* StockPriceTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StockPriceTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		46D03CDA309893F000B75205 /* WebSocketTransport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = WebSocketTransport; path = Packages/WebSocketTransport; sourceTree = "<group>"; };
+		46D03D373098B47700B75205 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +77,7 @@
 		46D03C9F309891EC00B75205 = {
 			isa = PBXGroup;
 			children = (
+				46D03D373098B47700B75205 /* Localizable.xcstrings */,
 				46D03CDA309893F000B75205 /* WebSocketTransport */,
 				46D03CAA309891EC00B75205 /* StockPriceTracker */,
 				46D03CB8309891ED00B75205 /* StockPriceTrackerTests */,
@@ -196,6 +199,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
 			);
 			mainGroup = 46D03C9F309891EC00B75205;
 			minimizedProjectReferenceProxies = 1;
@@ -215,6 +219,7 @@
 		46D03CA6309891EC00B75205 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				46D03D383098B47700B75205 /* Localizable.xcstrings in Resources */,
 			);
 		};
 		46D03CB3309891ED00B75205 /* Resources */ = {
@@ -321,6 +326,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -378,6 +384,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
