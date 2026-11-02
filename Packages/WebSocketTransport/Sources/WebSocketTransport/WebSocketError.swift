@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 public enum WebSocketError: Error, Equatable {
     case notConnected
     case connectionAlreadyStarted
