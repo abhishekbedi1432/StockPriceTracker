@@ -56,13 +56,17 @@ struct PriceSimulator {
 
         let count = Int.random(in: min(2, stocks.count)...min(6, stocks.count))
         return stocks.shuffled().prefix(count).map { stock in
-            let movementInCents = Int.random(in: -500...500)
-            let movement = Decimal(movementInCents) / 100
-
-            return StockPriceMessage(
-                symbol: stock.symbol,
-                price: stock.price + movement
-            )
+            makeUpdate(for: stock, movementInCents: Int.random(in: -500...500))
         }
+    }
+
+    static func makeUpdate(for stock: Stock, movementInCents: Int) -> StockPriceMessage {
+        let movement = Decimal(movementInCents) / 100
+        // Keep the simulated price positive even after repeated downward moves.
+        let minimumPrice = Decimal(1) / 100
+        return StockPriceMessage(
+            symbol: stock.symbol,
+            price: max(minimumPrice, stock.price + movement)
+        )
     }
 }
