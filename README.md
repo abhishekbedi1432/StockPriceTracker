@@ -4,7 +4,7 @@ A SwiftUI assessment app displaying simulated prices for 25 stock symbols. Price
 
 ## Run locally
 
-The development environment is Xcode 27.1 with Swift 6.4. The local WebSocket package requires Swift tools 6.4. App deployment currently uses Xcode's recommended iOS deployment target; the project and app test settings also contain iOS 27.0. Use a compatible iOS simulator. Older toolchains have not been validated.
+The development environment is Xcode 27.1 with Swift 6.4. The local WebSocket package requires Swift tools 6.4. The app and app tests target iOS 17.0 or later. The reusable WebSocket package retains its iOS 15 minimum and is compatible with the app's iOS 17 target. Use an iOS 17 or newer simulator. Older toolchains have not been validated.
 
 1. Open `StockPriceTracker.xcodeproj` in Xcode.
 2. Select the `StockPriceTracker` scheme and an installed iOS simulator.
