@@ -31,7 +31,7 @@ struct WebSocketEchoIntegrationTests {
         // Close the socket if the server stops responding.
         let timeoutTask = Task {
             do {
-                try await Task.sleep(nanoseconds: 15_000_000_000) //revisit
+                try await Task.sleep(for: .seconds(15))
                 await client.disconnect()
             } catch {
                 // Cancellation means the test finished before the timeout.
