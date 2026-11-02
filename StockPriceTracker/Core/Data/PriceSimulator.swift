@@ -38,14 +38,14 @@ struct PriceSimulator {
         ]
 
         return companies.map { company in
-            Stock(
+            let initialPriceInCents = Int.random(in: 10_000...50_000)
+
+            return Stock(
                 symbol: company.symbol,
                 name: company.name,
-                description: """
-                Stock-price updates for \(company.name).
-                """,
+                description: "Stock-price updates for \(company.name).",
                 currencyCode: currencyCode,
-                price: Decimal(Int.random(in: 10_000...50_000)) / 100,
+                price: Decimal(initialPriceInCents) / 100,
                 change: 0
             )
         }
@@ -58,7 +58,8 @@ struct PriceSimulator {
             return nil
         }
 
-        let movement = Decimal(Int.random(in: -500...500)) / 100
+        let movementInCents = Int.random(in: -500...500)
+        let movement = Decimal(movementInCents) / 100
 
         return StockPriceMessage(
             symbol: stock.symbol,

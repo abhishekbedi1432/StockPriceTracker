@@ -31,22 +31,7 @@ public actor URLSessionWebSocketClient: WebSocketClient {
         task.resume()
 
         do {
-            // A successful pong confirms the connection is usable.
-            try await withTaskCancellationHandler {
-                try await withCheckedThrowingContinuation {
-                    (continuation: CheckedContinuation<Void, any Error>) in
-
-                    task.sendPing { error in
-                        if let error {
-                            continuation.resume(throwing: error)
-                        } else {
-                            continuation.resume()
-                        }
-                    }
-                }
-            } onCancel: {
-                task.cancel(with: .goingAway, reason: nil)
-            }
+            try await confirmConnection(using: task)
 
             try Task.checkCancellation()
 
@@ -105,6 +90,25 @@ public actor URLSessionWebSocketClient: WebSocketClient {
     public func disconnect() async {
         guard let task = socket else { return }
         close(task)
+    }
+
+    private func confirmConnection(using task: URLSessionWebSocketTask) async throws {
+        // A successful pong confirms the connection is usable.
+        try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation {
+                (continuation: CheckedContinuation<Void, any Error>) in
+
+                task.sendPing { error in
+                    if let error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume()
+                    }
+                }
+            }
+        } onCancel: {
+            task.cancel(with: .goingAway, reason: nil)
+        }
     }
 
     private func connectedSocket() throws -> URLSessionWebSocketTask {

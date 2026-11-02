@@ -36,12 +36,13 @@ final class LiveStockRepository: StockRepository {
         try await client.connect(to: endpoint)
     }
 
+    /// Sends a simulated price to the echo server and applies the echoed response.
     func nextUpdate() async throws -> [Stock] {
-        guard let outgoing = makeUpdate(stocks) else {
+        guard let proposedUpdate = makeUpdate(stocks) else {
             throw FeedError.noStocks
         }
 
-        let data = try JSONEncoder().encode(outgoing)
+        let data = try JSONEncoder().encode(proposedUpdate)
         let text = String(decoding: data, as: UTF8.self)
 
         try await client.send(.text(text))
@@ -51,18 +52,18 @@ final class LiveStockRepository: StockRepository {
 
         switch response {
         case .text(let text):
-            let incoming = try JSONDecoder().decode(
+            let echoedUpdate = try JSONDecoder().decode(
                 StockPriceMessage.self,
                 from: Data(text.utf8)
             )
 
             guard let index = stocks.firstIndex(
-                where: { $0.symbol == incoming.symbol }
+                where: { $0.symbol == echoedUpdate.symbol }
             ) else {
-                throw FeedError.unknownSymbol(incoming.symbol)
+                throw FeedError.unknownSymbol(echoedUpdate.symbol)
             }
 
-            stocks[index].applyPrice(incoming.price)
+            stocks[index].applyPrice(echoedUpdate.price)
         }
 
         return stocks

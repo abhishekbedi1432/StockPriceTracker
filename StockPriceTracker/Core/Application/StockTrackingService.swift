@@ -19,8 +19,9 @@ final class StockTrackingService {
     @ObservationIgnored
     private var feedTask: Task<Void, Never>?
 
+    // Identifies the run allowed to publish updates after suspension points.
     @ObservationIgnored
-    private var runID: UUID?
+    private var activeRunID: UUID?
 
     init(repository: any StockRepository) {
         self.repository = repository
@@ -33,7 +34,7 @@ final class StockTrackingService {
         }
 
         let id = UUID()
-        runID = id
+        activeRunID = id
         state = .connecting
 
         feedTask = Task { [weak self] in
@@ -48,7 +49,8 @@ final class StockTrackingService {
         }
 
         state = .stopping
-        runID = nil
+        // Invalidate before awaiting disconnection so this stop owns cleanup.
+        activeRunID = nil
 
         task.cancel()
         await repository.disconnect()
@@ -63,31 +65,31 @@ final class StockTrackingService {
             try await repository.connect()
             try Task.checkCancellation()
 
-            guard runID == id else { return }
+            guard activeRunID == id else { return }
 
             state = .connected
 
             while true {
-                try await Task.sleep(nanoseconds: 1_000_000_000)
+                try await Task.sleep(for: .seconds(0.5))
 
                 let updatedStocks = try await repository.nextUpdate()
                 try Task.checkCancellation()
 
-                guard runID == id else { return }
+                guard activeRunID == id else { return }
 
                 stocks = updatedStocks
             }
         } catch {
             // stop() owns cleanup when it has invalidated this run.
-            guard runID == id else { return }
+            guard activeRunID == id else { return }
 
             await repository.disconnect()
 
-            guard runID == id else { return }
+            guard activeRunID == id else { return }
 
             state = .failed
             feedTask = nil
-            runID = nil
+            activeRunID = nil
         }
     }
 }

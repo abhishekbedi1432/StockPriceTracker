@@ -35,44 +35,9 @@ struct StockListView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 14) {
-            TimelineView(.periodic(from: .now, by: 60)) { context in
-                Text(
-                    context.date,
-                    format: .dateTime.day().month(.wide)
-                )
-                .font(.title2.bold())
-                .foregroundStyle(.secondary)
-            }
-
-            HStack {
-                Label {
-                    Text(statusTitle)
-                } icon: {
-                    Circle()
-                        .fill(statusColor)
-                        .frame(width: 8, height: 8)
-                }
-                .font(.subheadline)
-
-                Spacer()
-
-                Button(action: handleFeedAction) {
-                    Text(buttonTitle)
-                        .fontWeight(.semibold)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.blue)
-                .disabled(viewModel.state == .stopping)
-            }
-
-            Picker("Sort by", selection: $viewModel.sortOption) {
-                Text("Price")
-                    .tag(StockSortOption.price)
-
-                Text("Price Change")
-                    .tag(StockSortOption.change)
-            }
-            .pickerStyle(.segmented)
+            dateHeading
+            connectionControls
+            sortPicker
 
             if viewModel.state == .failed {
                 Text("The feed stopped. Please try again.")
@@ -86,6 +51,51 @@ struct StockListView: View {
         }
         .padding(.horizontal)
         .padding(.bottom, 12)
+    }
+
+    private var dateHeading: some View {
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            Text(
+                context.date,
+                format: .dateTime.day().month(.wide)
+            )
+            .font(.title2.bold())
+            .foregroundStyle(.secondary)
+        }
+    }
+
+    private var connectionControls: some View {
+        HStack {
+            Label {
+                Text(statusTitle)
+            } icon: {
+                Circle()
+                    .fill(statusColor)
+                    .frame(width: 8, height: 8)
+            }
+            .font(.subheadline)
+
+            Spacer()
+
+            Button(action: handleFeedAction) {
+                Text(buttonTitle)
+                    .fontWeight(.semibold)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.blue)
+            .disabled(viewModel.state == .stopping)
+        }
+    }
+
+    private var sortPicker: some View {
+        Picker("Sort by", selection: $viewModel.sortOption) {
+            Text("Price")
+                .tag(StockSortOption.price)
+
+            Text("Price Change")
+                .tag(StockSortOption.change)
+        }
+        .pickerStyle(.segmented)
     }
 
     private var statusTitle: LocalizedStringKey {

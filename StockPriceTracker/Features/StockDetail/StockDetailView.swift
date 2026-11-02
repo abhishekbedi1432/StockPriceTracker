@@ -16,36 +16,11 @@ struct StockDetailView: View {
             if let stock = viewModel.stock {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text(stock.name)
-                                .font(.title2)
-                                .foregroundStyle(.secondary)
-
-                            Text(
-                                stock.price,
-                                format: .currency(
-                                    code: stock.currencyCode
-                                )
-                            )
-                            .font(.largeTitle.bold())
-                            .monospacedDigit()
-
-                            PriceChangeView(change: stock.change)
-
-                            Text("Change since the previous update")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                        priceSummary(for: stock)
 
                         Divider()
 
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("About")
-                                .font(.headline)
-
-                            Text(stock.description)
-                                .foregroundStyle(.secondary)
-                        }
+                        aboutSection(for: stock)
 
                         Label(
                             "Simulated prices",
@@ -71,4 +46,38 @@ struct StockDetailView: View {
         .navigationTitle(viewModel.symbol)
         .navigationBarTitleDisplayMode(.inline)
     }
+
+    private func priceSummary(for stock: Stock) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(stock.name)
+                .font(.title2)
+                .foregroundStyle(.secondary)
+
+            Text(
+                stock.price,
+                format: .currency(
+                    code: stock.currencyCode
+                )
+            )
+            .font(.largeTitle.bold())
+            .monospacedDigit()
+
+            PriceChangeView(change: stock.change)
+
+            Text("Change since the previous update")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func aboutSection(for stock: Stock) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("About")
+                .font(.headline)
+
+            Text(stock.description)
+                .foregroundStyle(.secondary)
+        }
+    }
+
 }
