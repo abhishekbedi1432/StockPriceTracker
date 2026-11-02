@@ -8,29 +8,28 @@
 import Foundation
 import Observation
 
-enum StockSortOption: CaseIterable, Identifiable {
+enum StockSortOption: Hashable {
     case price
     case change
 
-    var id: Self { self }
-
     func sort(_ stocks: [Stock]) -> [Stock] {
-        stocks.sorted { first, second in
-            switch self {
-            case .price:
-                if first.price == second.price {
-                    return first.symbol < second.symbol
-                }
+        let keyPath: KeyPath<Stock, Decimal>
+        switch self {
+        case .price:
+            keyPath = \.price
+        case .change:
+            keyPath = \.change
+        }
 
-                return first.price > second.price
+        return stocks.sorted { first, second in
+            let firstValue = first[keyPath: keyPath]
+            let secondValue = second[keyPath: keyPath]
 
-            case .change:
-                if first.change == second.change {
-                    return first.symbol < second.symbol
-                }
-
-                return first.change > second.change
+            if firstValue == secondValue {
+                return first.symbol < second.symbol
             }
+
+            return firstValue > secondValue
         }
     }
 }
