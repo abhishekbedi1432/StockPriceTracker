@@ -11,6 +11,27 @@
         }
       }
     },
+    "Adobe develops software for creative work, documents, and digital experiences." : {
+
+    },
+    "Alibaba provides commerce platforms and cloud computing services." : {
+
+    },
+    "Alphabet develops internet search, advertising, and cloud services." : {
+
+    },
+    "Amazon operates online retail, logistics, and cloud computing services." : {
+
+    },
+    "AMD designs processors and graphics technology for computers and data centers." : {
+
+    },
+    "Apple designs personal devices, software, and digital services." : {
+
+    },
+    "Block develops payment and financial technology products. This demo uses the historical SQ symbol." : {
+
+    },
     "Cancel" : {
       "localizations" : {
         "ar" : {
@@ -51,6 +72,9 @@
         }
       }
     },
+    "Cisco develops networking, security, and collaboration technology." : {
+
+    },
     "Connected" : {
       "localizations" : {
         "ar" : {
@@ -90,6 +114,36 @@
           }
         }
       }
+    },
+    "DocuSign provides electronic signature and agreement management software." : {
+
+    },
+    "IBM provides enterprise software, infrastructure, and consulting services." : {
+
+    },
+    "Intel designs and manufactures processors and other semiconductor products." : {
+
+    },
+    "Lyft operates a platform that connects riders with drivers." : {
+
+    },
+    "Meta develops social networking, messaging, and virtual reality products." : {
+
+    },
+    "Microsoft develops productivity software, cloud services, and computing platforms." : {
+
+    },
+    "Netflix provides streaming entertainment and produces films and series." : {
+
+    },
+    "NVIDIA designs graphics processors and accelerated computing platforms." : {
+
+    },
+    "Oracle develops database software, business applications, and cloud services." : {
+
+    },
+    "Pinterest operates a visual discovery platform for ideas and inspiration." : {
+
     },
     "Price" : {
       "localizations" : {
@@ -151,6 +205,9 @@
         }
       }
     },
+    "Salesforce provides cloud software for customer relationship management." : {
+
+    },
     "Select a stock" : {
       "localizations" : {
         "ar" : {
@@ -161,6 +218,9 @@
         }
       }
     },
+    "Shopify provides software and services that help merchants sell online and in person." : {
+
+    },
     "Simulated prices" : {
       "localizations" : {
         "ar" : {
@@ -170,6 +230,9 @@
           }
         }
       }
+    },
+    "Snap develops Snapchat and camera-based communication products." : {
+
     },
     "Sort by" : {
       "localizations" : {
@@ -203,6 +266,7 @@
     },
     "Stock-price updates for %@." : {
       "comment" : "Stock detail description. The placeholder is the company name.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -242,6 +306,9 @@
         }
       }
     },
+    "Tesla develops electric vehicles and energy storage products." : {
+
+    },
     "The feed stopped. Please try again." : {
       "localizations" : {
         "ar" : {
@@ -251,6 +318,15 @@
           }
         }
       }
+    },
+    "Twitter developed a social networking service. This demo uses its historical TWTR symbol." : {
+
+    },
+    "Uber operates platforms for ride booking and delivery services." : {
+
+    },
+    "Zoom provides video meetings and workplace communication software." : {
+
     }
   },
   "version" : "1.3"
