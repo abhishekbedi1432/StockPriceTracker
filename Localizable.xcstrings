@@ -1,333 +1,508 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "About" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نبذة"
+  "sourceLanguage": "en",
+  "strings": {
+    "About": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نبذة"
           }
         }
       }
     },
-    "Adobe develops software for creative work, documents, and digital experiences." : {
-
-    },
-    "Alibaba provides commerce platforms and cloud computing services." : {
-
-    },
-    "Alphabet develops internet search, advertising, and cloud services." : {
-
-    },
-    "Amazon operates online retail, logistics, and cloud computing services." : {
-
-    },
-    "AMD designs processors and graphics technology for computers and data centers." : {
-
-    },
-    "Apple designs personal devices, software, and digital services." : {
-
-    },
-    "Block develops payment and financial technology products. This demo uses the historical SQ symbol." : {
-
-    },
-    "Cancel" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إلغاء"
+    "Adobe develops software for creative work, documents, and digital experiences.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تطور Adobe برمجيات للعمل الإبداعي والمستندات والتجارب الرقمية."
           }
         }
       }
     },
-    "Change since the previous update" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التغير منذ التحديث السابق"
+    "Alibaba provides commerce platforms and cloud computing services.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توفر Alibaba منصات للتجارة وخدمات الحوسبة السحابية."
           }
         }
       }
     },
-    "Choose a symbol to see its latest price." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اختر رمزًا لعرض أحدث سعر له."
+    "Alphabet develops internet search, advertising, and cloud services.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تطور Alphabet خدمات البحث على الإنترنت والإعلان والحوسبة السحابية."
           }
         }
       }
     },
-    "Choose another stock from the list." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اختر سهمًا آخر من القائمة."
+    "Amazon operates online retail, logistics, and cloud computing services.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تدير Amazon تجارة التجزئة عبر الإنترنت والخدمات اللوجستية وخدمات الحوسبة السحابية."
           }
         }
       }
     },
-    "Cisco develops networking, security, and collaboration technology." : {
-
-    },
-    "Connected" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "متصل"
+    "AMD designs processors and graphics technology for computers and data centers.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تصمم AMD معالجات وتقنيات رسوميات لأجهزة الكمبيوتر ومراكز البيانات."
           }
         }
       }
     },
-    "Connecting…" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ الاتصال…"
+    "Apple designs personal devices, software, and digital services.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تصمم Apple أجهزة شخصية وبرامج وخدمات رقمية."
           }
         }
       }
     },
-    "Connection failed" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "فشل الاتصال"
+    "Block develops payment and financial technology products. This demo uses the historical SQ symbol.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تطور Block منتجات للدفع والتكنولوجيا المالية. يستخدم هذا العرض الرمز التاريخي SQ."
           }
         }
       }
     },
-    "Disconnected" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "غير متصل"
+    "Cancel": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إلغاء"
           }
         }
       }
     },
-    "DocuSign provides electronic signature and agreement management software." : {
-
-    },
-    "IBM provides enterprise software, infrastructure, and consulting services." : {
-
-    },
-    "Intel designs and manufactures processors and other semiconductor products." : {
-
-    },
-    "Lyft operates a platform that connects riders with drivers." : {
-
-    },
-    "Meta develops social networking, messaging, and virtual reality products." : {
-
-    },
-    "Microsoft develops productivity software, cloud services, and computing platforms." : {
-
-    },
-    "Netflix provides streaming entertainment and produces films and series." : {
-
-    },
-    "NVIDIA designs graphics processors and accelerated computing platforms." : {
-
-    },
-    "Oracle develops database software, business applications, and cloud services." : {
-
-    },
-    "Pinterest operates a visual discovery platform for ideas and inspiration." : {
-
-    },
-    "Price" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "السعر"
+    "Change since the previous update": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التغير منذ التحديث السابق"
           }
         }
       }
     },
-    "Price Change" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تغير السعر"
+    "Choose a symbol to see its latest price.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اختر رمزًا لعرض أحدث سعر له."
           }
         }
       }
     },
-    "Price decreased" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "انخفض السعر"
+    "Choose another stock from the list.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اختر سهمًا آخر من القائمة."
           }
         }
       }
     },
-    "Price increased" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ارتفع السعر"
+    "Cisco develops networking, security, and collaboration technology.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تطور Cisco تقنيات الشبكات والأمن والتعاون."
           }
         }
       }
     },
-    "Price unchanged" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لم يتغير السعر"
+    "Connected": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متصل"
           }
         }
       }
     },
-    "Retry" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إعادة المحاولة"
+    "Connecting…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ الاتصال…"
           }
         }
       }
     },
-    "Salesforce provides cloud software for customer relationship management." : {
-
-    },
-    "Select a stock" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اختر سهمًا"
+    "Connection failed": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فشل الاتصال"
           }
         }
       }
     },
-    "Shopify provides software and services that help merchants sell online and in person." : {
-
-    },
-    "Simulated prices" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أسعار محاكاة"
+    "Disconnected": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "غير متصل"
           }
         }
       }
     },
-    "Snap develops Snapchat and camera-based communication products." : {
-
-    },
-    "Sort by" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ترتيب حسب"
+    "DocuSign provides electronic signature and agreement management software.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توفر DocuSign برمجيات للتوقيع الإلكتروني وإدارة الاتفاقيات."
           }
         }
       }
     },
-    "Start" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بدء"
+    "IBM provides enterprise software, infrastructure, and consulting services.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توفر IBM برمجيات المؤسسات والبنية التحتية وخدمات الاستشارات."
           }
         }
       }
     },
-    "Stock unavailable" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "السهم غير متاح"
+    "Intel designs and manufactures processors and other semiconductor products.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تصمم Intel وتصنع المعالجات ومنتجات أشباه الموصلات الأخرى."
           }
         }
       }
     },
-    "Stock-price updates for %@." : {
-      "comment" : "Stock detail description. The placeholder is the company name.",
-      "extractionState" : "stale",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "تحديثات سعر سهم %@‏"
+    "Lyft operates a platform that connects riders with drivers.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تدير Lyft منصة تربط الركاب بالسائقين."
           }
         }
       }
     },
-    "Stocks" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الأسهم"
+    "Meta develops social networking, messaging, and virtual reality products.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تطور Meta منتجات التواصل الاجتماعي والمراسلة والواقع الافتراضي."
           }
         }
       }
     },
-    "Stop" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إيقاف"
+    "Microsoft develops productivity software, cloud services, and computing platforms.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تطور Microsoft برامج الإنتاجية والخدمات السحابية ومنصات الحوسبة."
           }
         }
       }
     },
-    "Stopping…" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ الإيقاف…"
+    "Netflix provides streaming entertainment and produces films and series.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توفر Netflix ترفيهًا عبر البث وتنتج أفلامًا ومسلسلات."
           }
         }
       }
     },
-    "Tesla develops electric vehicles and energy storage products." : {
-
-    },
-    "The feed stopped. Please try again." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "توقف تدفق الأسعار. يُرجى المحاولة مرة أخرى."
+    "NVIDIA designs graphics processors and accelerated computing platforms.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تصمم NVIDIA معالجات رسوميات ومنصات حوسبة مسرّعة."
           }
         }
       }
     },
-    "Twitter developed a social networking service. This demo uses its historical TWTR symbol." : {
-
+    "Oracle develops database software, business applications, and cloud services.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تطور Oracle برمجيات قواعد البيانات وتطبيقات الأعمال والخدمات السحابية."
+          }
+        }
+      }
     },
-    "Uber operates platforms for ride booking and delivery services." : {
-
+    "Pinterest operates a visual discovery platform for ideas and inspiration.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تدير Pinterest منصة اكتشاف مرئي للأفكار والإلهام."
+          }
+        }
+      }
     },
-    "Zoom provides video meetings and workplace communication software." : {
-
+    "Price": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "السعر"
+          }
+        }
+      }
+    },
+    "Price Change": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغير السعر"
+          }
+        }
+      }
+    },
+    "Price decreased": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انخفض السعر"
+          }
+        }
+      }
+    },
+    "Price increased": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارتفع السعر"
+          }
+        }
+      }
+    },
+    "Price unchanged": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم يتغير السعر"
+          }
+        }
+      }
+    },
+    "Retry": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة المحاولة"
+          }
+        }
+      }
+    },
+    "Salesforce provides cloud software for customer relationship management.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توفر Salesforce برمجيات سحابية لإدارة علاقات العملاء."
+          }
+        }
+      }
+    },
+    "Select a stock": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اختر سهمًا"
+          }
+        }
+      }
+    },
+    "Shopify provides software and services that help merchants sell online and in person.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توفر Shopify برمجيات وخدمات تساعد التجار على البيع عبر الإنترنت وشخصيًا."
+          }
+        }
+      }
+    },
+    "Simulated prices": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أسعار محاكاة"
+          }
+        }
+      }
+    },
+    "Snap develops Snapchat and camera-based communication products.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تطور Snap تطبيق Snapchat ومنتجات تواصل تعتمد على الكاميرا."
+          }
+        }
+      }
+    },
+    "Sort by": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ترتيب حسب"
+          }
+        }
+      }
+    },
+    "Start": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدء"
+          }
+        }
+      }
+    },
+    "Stock unavailable": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "السهم غير متاح"
+          }
+        }
+      }
+    },
+    "Stock-price updates for %@.": {
+      "comment": "Stock detail description. The placeholder is the company name.",
+      "extractionState": "stale",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "machine_translated",
+            "value": "تحديثات سعر سهم %@‏"
+          }
+        }
+      }
+    },
+    "Stocks": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الأسهم"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إيقاف"
+          }
+        }
+      }
+    },
+    "Stopping…": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جارٍ الإيقاف…"
+          }
+        }
+      }
+    },
+    "Tesla develops electric vehicles and energy storage products.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تطور Tesla مركبات كهربائية ومنتجات لتخزين الطاقة."
+          }
+        }
+      }
+    },
+    "The feed stopped. Please try again.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توقف تدفق الأسعار. يُرجى المحاولة مرة أخرى."
+          }
+        }
+      }
+    },
+    "Twitter developed a social networking service. This demo uses its historical TWTR symbol.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "طورت Twitter خدمة تواصل اجتماعي. يستخدم هذا العرض رمزها التاريخي TWTR."
+          }
+        }
+      }
+    },
+    "Uber operates platforms for ride booking and delivery services.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تدير Uber منصات لحجز الرحلات وخدمات التوصيل."
+          }
+        }
+      }
+    },
+    "Zoom provides video meetings and workplace communication software.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توفر Zoom برمجيات لاجتماعات الفيديو والتواصل في مكان العمل."
+          }
+        }
+      }
     }
   },
-  "version" : "1.3"
+  "version": "1.3"
 }
