@@ -53,12 +53,10 @@ final class LiveStockRepository: StockRepository {
 
         switch response {
         case .text(let text):
-            print("Received:", text)
             let echoedUpdates = try JSONDecoder().decode(
                 [StockPriceMessage].self,
                 from: Data(text.utf8)
             )
-            
 
             // Validate the entire batch before publishing any changes.
             var updatedStocks = stocks

@@ -93,10 +93,11 @@ private final class RetryStockRepository: StockRepository {
     ]
     private(set) var connectCount = 0
     private(set) var disconnectCount = 0
-    private var parkedUpdate: CheckedContinuation<[Stock], any Error>?
+    private let gate = ParkGate<[Stock]>()
 
     func connect() async throws {
         connectCount += 1
+        gate.reset()
         if connectCount == 1 {
             throw ConnectionFailure.unavailable
         }
@@ -104,16 +105,12 @@ private final class RetryStockRepository: StockRepository {
 
     func nextUpdate() async throws -> [Stock] {
         // Stay connected without spinning the feed loop until stop().
-        try await withCheckedThrowingContinuation { continuation in
-            parkedUpdate = continuation
-        }
+        try await gate.park()
     }
 
     func disconnect() async {
         disconnectCount += 1
-        let parked = parkedUpdate
-        parkedUpdate = nil
-        parked?.resume(throwing: CancellationError())
+        gate.cancel()
     }
 
     private enum ConnectionFailure: Error {
@@ -136,11 +133,12 @@ private final class FailingUpdateRepository: StockRepository {
     private(set) var connectCount = 0
     private(set) var disconnectCount = 0
     private var updateCount = 0
-    private var parkedUpdate: CheckedContinuation<[Stock], any Error>?
+    private let gate = ParkGate<[Stock]>()
 
     func connect() async throws {
         connectCount += 1
         updateCount = 0
+        gate.reset()
     }
 
     func nextUpdate() async throws -> [Stock] {
@@ -159,16 +157,12 @@ private final class FailingUpdateRepository: StockRepository {
             return stocks
         }
 
-        return try await withCheckedThrowingContinuation { continuation in
-            parkedUpdate = continuation
-        }
+        return try await gate.park()
     }
 
     func disconnect() async {
         disconnectCount += 1
-        let parked = parkedUpdate
-        parkedUpdate = nil
-        parked?.resume(throwing: CancellationError())
+        gate.cancel()
     }
 
     private enum UpdateFailure: Error {

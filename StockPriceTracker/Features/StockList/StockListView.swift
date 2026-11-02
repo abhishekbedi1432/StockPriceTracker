@@ -152,7 +152,7 @@ struct StockListView: View {
         }
     }
 
-    private func handleFeedAction() {
+    func handleFeedAction() {
         switch viewModel.state {
         case .disconnected, .failed:
             viewModel.start()

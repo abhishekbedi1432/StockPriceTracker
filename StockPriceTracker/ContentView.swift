@@ -13,7 +13,10 @@ struct ContentView: View {
     @State private var listViewModel: StockListViewModel
     @State private var selectedSymbol: String?
 
-    init(tracking: StockTrackingService) {
+    init(
+        tracking: StockTrackingService,
+        selectedSymbol: String? = nil
+    ) {
         self.tracking = tracking
 
         _listViewModel = State(
@@ -21,6 +24,7 @@ struct ContentView: View {
                 tracking: tracking
             )
         )
+        _selectedSymbol = State(initialValue: selectedSymbol)
     }
 
     var body: some View {

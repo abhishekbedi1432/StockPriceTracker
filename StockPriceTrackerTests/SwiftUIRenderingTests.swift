@@ -58,19 +58,19 @@ struct SwiftUIRenderingTests {
     @Test
     func stockListRendersAllFeedStatesAndActions() async {
         // disconnected / Start
-        await renderListState(.disconnected, tapFeedButton: true)
+        await renderListState(.disconnected)
 
         // connecting / Cancel
-        await renderListState(.connecting, tapFeedButton: true)
+        await renderListState(.connecting)
 
         // connected / Stop
-        await renderListState(.connected, tapFeedButton: true)
+        await renderListState(.connected)
 
         // stopping (button disabled)
-        await renderListState(.stopping, tapFeedButton: true)
+        await renderListState(.stopping)
 
         // failed / Retry message + button
-        await renderListState(.failed, tapFeedButton: true)
+        await renderListState(.failed)
 
         // Accessibility Dynamic Type uses menu picker style.
         let tracking = StockTrackingService(repository: RenderRepository())
@@ -147,10 +147,7 @@ struct SwiftUIRenderingTests {
         return host
     }
 
-    private func renderListState(
-        _ state: FeedState,
-        tapFeedButton: Bool
-    ) async {
+    private func renderListState(_ state: FeedState) async {
         let repository = StatefulListRepository(target: state)
         let tracking = StockTrackingService(repository: repository)
         let listModel = StockListViewModel(tracking: tracking)
@@ -176,9 +173,6 @@ struct SwiftUIRenderingTests {
                 StockListView(viewModel: listModel, selection: .constant(nil))
                     .frame(width: 390, height: 844)
             )
-            if tapFeedButton {
-                tapButtons(in: host.view)
-            }
             repository.delayDisconnect = false
             repository.finishDisconnect()
             await stopTask.value
@@ -196,29 +190,9 @@ struct SwiftUIRenderingTests {
             .frame(width: 390, height: 844)
         )
 
-        if tapFeedButton {
-            tapButtons(in: host.view)
-            // Let Start/Cancel/Stop/Retry tasks settle without leaving orphans.
-            try? await Task.sleep(for: .milliseconds(50))
-        }
-
-        if tracking.state == .connecting || tracking.state == .connected || tracking.state == .stopping {
-            await tracking.stop()
-        } else if tracking.state == .failed {
-            await tracking.stop()
-        }
-    }
-
-    private func tapButtons(in root: UIView?) {
-        guard let root else { return }
-        var queue: [UIView] = [root]
-        while let view = queue.first {
-            queue.removeFirst()
-            queue.append(contentsOf: view.subviews)
-            if let button = view as? UIButton, button.isEnabled {
-                button.sendActions(for: .touchUpInside)
-            }
-        }
+        // Do not tap buttons here: handleFeedAction may spawn unstructured stop Tasks.
+        // Always stop through the service so the feed task cannot outlive the test.
+        await tracking.stop()
     }
 
     private func makeStock(
@@ -252,20 +226,15 @@ private final class RenderRepository: StockRepository {
         )
     ]
 
+    private let gate = ParkGate<[Stock]>()
+
     func connect() async throws {}
     func nextUpdate() async throws -> [Stock] {
-        try await withCheckedThrowingContinuation { continuation in
-            // Park until disconnect so the feed cannot spin.
-            parked = continuation
-        }
+        try await gate.park()
     }
     func disconnect() async {
-        let pending = parked
-        parked = nil
-        pending?.resume(throwing: CancellationError())
+        gate.cancel()
     }
-
-    private var parked: CheckedContinuation<[Stock], any Error>?
 }
 
 @MainActor
@@ -280,18 +249,14 @@ private final class ParkedRepository: StockRepository {
             change: 0
         )
     ]
-    private var parked: CheckedContinuation<[Stock], any Error>?
+    private let gate = ParkGate<[Stock]>()
 
     func connect() async throws {}
     func nextUpdate() async throws -> [Stock] {
-        try await withCheckedThrowingContinuation { continuation in
-            parked = continuation
-        }
+        try await gate.park()
     }
     func disconnect() async {
-        let pending = parked
-        parked = nil
-        pending?.resume(throwing: CancellationError())
+        gate.cancel()
     }
 }
 
@@ -311,8 +276,8 @@ private final class StatefulListRepository: StockRepository {
     var failConnect = false
     var delayDisconnect = false
 
-    private var connection: CheckedContinuation<Void, any Error>?
-    private var parkedUpdate: CheckedContinuation<[Stock], any Error>?
+    private let connectGate = ParkGate<Void>()
+    private let updateGate = ParkGate<[Stock]>()
     private var disconnectWaiter: CheckedContinuation<Void, Never>?
 
     init(target: FeedState) {
@@ -324,28 +289,24 @@ private final class StatefulListRepository: StockRepository {
             throw ConnectFailure.failed
         }
         if blockConnect {
-            try await withCheckedThrowingContinuation { continuation in
-                connection = continuation
-            }
+            try await connectGate.park()
         }
     }
 
     func nextUpdate() async throws -> [Stock] {
-        try await withCheckedThrowingContinuation { continuation in
-            parkedUpdate = continuation
-        }
+        try await updateGate.park()
     }
 
     func disconnect() async {
+        // Cancel gates first so a late feed task cannot strand a continuation.
+        connectGate.cancel()
+        updateGate.cancel()
+
         if delayDisconnect {
             await withCheckedContinuation { continuation in
                 disconnectWaiter = continuation
             }
         }
-        connection?.resume(throwing: CancellationError())
-        connection = nil
-        parkedUpdate?.resume(throwing: CancellationError())
-        parkedUpdate = nil
     }
 
     func finishDisconnect() {

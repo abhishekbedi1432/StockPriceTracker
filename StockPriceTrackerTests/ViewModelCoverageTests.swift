@@ -65,21 +65,17 @@ private final class StaticRepository: StockRepository {
         Stock(symbol: "AAPL", name: "Apple", description: "A", currencyCode: "USD", price: 100, change: 5),
         Stock(symbol: "MSFT", name: "Microsoft", description: "M", currencyCode: "USD", price: 200, change: 1)
     ]
-    private var pendingUpdate: CheckedContinuation<[Stock], any Error>?
+    private let gate = ParkGate<[Stock]>()
 
     func connect() async throws {}
 
-    /// Park after the first update so the service cannot spin the feed loop forever.
+    /// Parks so the service cannot spin the feed loop, and stays cancellable.
     func nextUpdate() async throws -> [Stock] {
-        try await withCheckedThrowingContinuation { continuation in
-            pendingUpdate = continuation
-        }
+        try await gate.park()
     }
 
     func disconnect() async {
-        let pending = pendingUpdate
-        pendingUpdate = nil
-        pending?.resume(throwing: CancellationError())
+        gate.cancel()
     }
 }
 
