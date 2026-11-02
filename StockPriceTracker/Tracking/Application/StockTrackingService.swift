@@ -13,7 +13,6 @@ import Observation
 final class StockTrackingService {
     private(set) var stocks: [Stock]
     private(set) var state: FeedState = .disconnected
-    private(set) var lastError: String?
 
     private let repository: any StockRepository
 
@@ -36,7 +35,6 @@ final class StockTrackingService {
         let id = UUID()
         runID = id
         state = .connecting
-        lastError = nil
 
         feedTask = Task { [weak self] in
             guard let self else { return }
@@ -87,7 +85,6 @@ final class StockTrackingService {
 
             guard runID == id else { return }
 
-            lastError = error.localizedDescription
             state = .failed
             feedTask = nil
             runID = nil

@@ -53,10 +53,6 @@ final class StockListViewModel {
         tracking.state
     }
 
-    var lastError: String? {
-        tracking.lastError
-    }
-
     func start() {
         tracking.start()
     }

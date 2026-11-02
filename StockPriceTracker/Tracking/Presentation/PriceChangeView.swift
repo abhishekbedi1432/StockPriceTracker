@@ -29,13 +29,17 @@ struct PriceChangeView: View {
         return "Price unchanged"
     }
 
+    private var formattedChange: Text {
+        Text(
+            change,
+            format: .number.precision(.fractionLength(2))
+        )
+    }
+
     var body: some View {
         Label {
-            Text(
-                change,
-                format: .number.precision(.fractionLength(2))
-            )
-            .monospacedDigit()
+            formattedChange
+                .monospacedDigit()
         } icon: {
             Image(systemName: symbol)
         }
@@ -48,11 +52,6 @@ struct PriceChangeView: View {
         ))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(accessibilityTitle))
-        .accessibilityValue(
-            Text(
-                change,
-                format: .number.precision(.fractionLength(2))
-            )
-        )
+        .accessibilityValue(formattedChange)
     }
 }
