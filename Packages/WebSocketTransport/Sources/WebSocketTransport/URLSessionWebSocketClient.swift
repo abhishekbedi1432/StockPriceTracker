@@ -8,11 +8,15 @@
 import Foundation
 public actor URLSessionWebSocketClient: WebSocketClient {
     private let session: URLSession
+    private let operationTimeoutSeconds: UInt64
     private var socket: URLSessionWebSocketTask?
     private var isConnected = false
 
-    public init(session: URLSession = .shared) {
+    /// Each connect, send, or receive must complete within this deadline.
+    public init(session: URLSession = .shared, operationTimeoutSeconds: UInt64 = 15) {
+        precondition((1...86_400).contains(operationTimeoutSeconds))
         self.session = session
+        self.operationTimeoutSeconds = operationTimeoutSeconds
     }
 
     public func connect(to url: URL) async throws {
@@ -29,6 +33,8 @@ public actor URLSessionWebSocketClient: WebSocketClient {
         let task = session.webSocketTask(with: url)
         socket = task
         task.resume()
+        let timeout = scheduleTimeout(for: task)
+        defer { timeout.cancel() }
 
         do {
             try await confirmConnection(using: task)
@@ -48,6 +54,8 @@ public actor URLSessionWebSocketClient: WebSocketClient {
 
     public func send(_ message: WebSocketMessage) async throws {
         let task = try connectedSocket()
+        let timeout = scheduleTimeout(for: task)
+        defer { timeout.cancel() }
 
         do {
             switch message {
@@ -62,6 +70,8 @@ public actor URLSessionWebSocketClient: WebSocketClient {
 
     public func receive() async throws -> WebSocketMessage {
         let task = try connectedSocket()
+        let timeout = scheduleTimeout(for: task)
+        defer { timeout.cancel() }
 
         do {
             let message = try await task.receive()
@@ -108,6 +118,20 @@ public actor URLSessionWebSocketClient: WebSocketClient {
             }
         } onCancel: {
             task.cancel(with: .goingAway, reason: nil)
+        }
+    }
+
+    private func scheduleTimeout(for task: URLSessionWebSocketTask) -> Task<Void, Never> {
+        Task {
+            do {
+                try await Task.sleep(nanoseconds: operationTimeoutSeconds * 1_000_000_000)
+                try Task.checkCancellation()
+                // Never close a replacement connection from an older operation.
+                guard socket === task else { return }
+                close(task)
+            } catch {
+                // A completed operation cancels its deadline.
+            }
         }
     }
 
