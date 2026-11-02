@@ -1,16 +1,19 @@
 //
-//  File.swift
+//  URLSessionWebSocketClient.swift
 //  WebSocketTransport
 //
 //  Created by Abhishek on 02/11/2026.
 //
 
 import Foundation
+
 public actor URLSessionWebSocketClient: WebSocketClient {
     private let session: URLSession
     private let operationTimeoutSeconds: UInt64
     private var socket: URLSessionWebSocketTask?
     private var isConnected = false
+    /// Set when the active operation deadline closes the current socket.
+    private var timedOutTask: URLSessionWebSocketTask?
 
     /// Each connect, send, or receive must complete within this deadline.
     public init(session: URLSession = .shared, operationTimeoutSeconds: UInt64 = 15) {
@@ -42,13 +45,12 @@ public actor URLSessionWebSocketClient: WebSocketClient {
             try Task.checkCancellation()
 
             guard socket === task else {
-                throw CancellationError()
+                throw mapTimeoutIfNeeded(for: task, fallback: CancellationError())
             }
 
             isConnected = true
         } catch {
-            close(task)
-            throw error
+            throw finishFailedOperation(task, error: error)
         }
     }
 
@@ -63,8 +65,7 @@ public actor URLSessionWebSocketClient: WebSocketClient {
                 try await task.send(.string(text))
             }
         } catch {
-            close(task)
-            throw error
+            throw finishFailedOperation(task, error: error)
         }
     }
 
@@ -78,7 +79,7 @@ public actor URLSessionWebSocketClient: WebSocketClient {
 
             // Ignore results from a connection that has been replaced.
             guard socket === task else {
-                throw CancellationError()
+                throw mapTimeoutIfNeeded(for: task, fallback: CancellationError())
             }
 
             switch message {
@@ -92,8 +93,7 @@ public actor URLSessionWebSocketClient: WebSocketClient {
                 throw WebSocketError.unsupportedMessage
             }
         } catch {
-            close(task)
-            throw error
+            throw finishFailedOperation(task, error: error)
         }
     }
 
@@ -122,17 +122,43 @@ public actor URLSessionWebSocketClient: WebSocketClient {
     }
 
     private func scheduleTimeout(for task: URLSessionWebSocketTask) -> Task<Void, Never> {
-        Task {
+        let timeoutSeconds = operationTimeoutSeconds
+        return Task {
             do {
-                try await Task.sleep(nanoseconds: operationTimeoutSeconds * 1_000_000_000)
+                try await Task.sleep(nanoseconds: timeoutSeconds * 1_000_000_000)
                 try Task.checkCancellation()
-                // Never close a replacement connection from an older operation.
-                guard socket === task else { return }
-                close(task)
+                self.applyTimeout(for: task)
             } catch {
                 // A completed operation cancels its deadline.
             }
         }
+    }
+
+    private func applyTimeout(for task: URLSessionWebSocketTask) {
+        // Never close a replacement connection from an older operation.
+        guard socket === task else { return }
+        timedOutTask = task
+        close(task)
+    }
+
+    private func finishFailedOperation(
+        _ task: URLSessionWebSocketTask,
+        error: any Error
+    ) -> any Error {
+        let mapped = mapTimeoutIfNeeded(for: task, fallback: error)
+        close(task)
+        return mapped
+    }
+
+    private func mapTimeoutIfNeeded(
+        for task: URLSessionWebSocketTask,
+        fallback: any Error
+    ) -> any Error {
+        if timedOutTask === task {
+            timedOutTask = nil
+            return WebSocketError.operationTimedOut
+        }
+        return fallback
     }
 
     private func connectedSocket() throws -> URLSessionWebSocketTask {
