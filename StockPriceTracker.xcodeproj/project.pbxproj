@@ -6,6 +6,10 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		46D03CDD309894A400B75205 /* WebSocketTransport in Frameworks */ = {isa = PBXBuildFile; productRef = 46D03CDC309894A400B75205 /* WebSocketTransport */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		46D03CB6309891ED00B75205 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		46D03CA8309891EC00B75205 /* StockPriceTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StockPriceTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46D03CB5309891ED00B75205 /* StockPriceTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StockPriceTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		46D03CBF309891ED00B75205 /* StockPriceTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StockPriceTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		46D03CDA309893F000B75205 /* WebSocketTransport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = WebSocketTransport; path = Packages/WebSocketTransport; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -51,6 +56,7 @@
 		46D03CA5309891EC00B75205 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				46D03CDD309894A400B75205 /* WebSocketTransport in Frameworks */,
 			);
 		};
 		46D03CB2309891ED00B75205 /* Frameworks */ = {
@@ -69,9 +75,11 @@
 		46D03C9F309891EC00B75205 = {
 			isa = PBXGroup;
 			children = (
+				46D03CDA309893F000B75205 /* WebSocketTransport */,
 				46D03CAA309891EC00B75205 /* StockPriceTracker */,
 				46D03CB8309891ED00B75205 /* StockPriceTrackerTests */,
 				46D03CC2309891ED00B75205 /* StockPriceTrackerUITests */,
+				46D03CDB309894A400B75205 /* Frameworks */,
 				46D03CA9309891EC00B75205 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -84,6 +92,13 @@
 				46D03CBF309891ED00B75205 /* StockPriceTrackerUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		46D03CDB309894A400B75205 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -103,6 +118,9 @@
 				46D03CAA309891EC00B75205 /* StockPriceTracker */,
 			);
 			name = StockPriceTracker;
+			packageProductDependencies = (
+				46D03CDC309894A400B75205 /* WebSocketTransport */,
+			);
 			productName = StockPriceTracker;
 			productReference = 46D03CA8309891EC00B75205 /* StockPriceTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -548,6 +566,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		46D03CDC309894A400B75205 /* WebSocketTransport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WebSocketTransport;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 46D03CA0309891EC00B75205 /* Project object */;
 	validationLevel = 1;
