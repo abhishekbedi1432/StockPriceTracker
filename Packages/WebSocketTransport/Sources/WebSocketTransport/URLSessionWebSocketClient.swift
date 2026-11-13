@@ -17,7 +17,7 @@ public actor URLSessionWebSocketClient: WebSocketClient {
 
     /// Each connect, send, or receive must complete within this deadline.
     public init(session: URLSession = .shared, operationTimeoutSeconds: UInt64 = 15) {
-        precondition((1...86_400).contains(operationTimeoutSeconds))
+        precondition((1...86_400).contains(operationTimeoutSeconds)) // 24 hours check
         self.session = session
         self.operationTimeoutSeconds = operationTimeoutSeconds
     }
@@ -125,7 +125,7 @@ public actor URLSessionWebSocketClient: WebSocketClient {
         let timeoutSeconds = operationTimeoutSeconds
         return Task {
             do {
-                try await Task.sleep(nanoseconds: timeoutSeconds * 1_000_000_000)
+                try await Task.sleep(for: .seconds(timeoutSeconds))
                 try Task.checkCancellation()
                 self.applyTimeout(for: task)
             } catch {
